@@ -17,9 +17,18 @@ io.on("connection", (socket) => {
     socket.emit("getTeamsObj", teamsObj);
 
     socket.on("newPurchase", (purchasedObj) => {
-        console.log(purchasedObj);
-        teamsObj.teams[purchasedObj.value].count += purchasedObj.quantity;
-        teamsObj.total += purchasedObj.quantity;
-        io.emit("getTeamsObj", teamsObj);
+        if (purchasedObj.quantity > 0) {
+            teamsObj.teams[purchasedObj.value].count += purchasedObj.quantity;
+            teamsObj.total += purchasedObj.quantity;
+            io.emit("getTeamsObj", teamsObj);
+
+            // Extra task
+            let feedbackObj = {message: "You have successfully purchased " + purchasedObj.quantity + 
+                                " tickets for " + teamsObj.teams[purchasedObj.value].text};
+            socket.emit("feedbackMessage", feedbackObj);
+        } else {
+            let feedbackObj = {message: "The quantity is invalid: " + purchasedObj.quantity};
+            socket.emit("feedbackMessage", feedbackObj);
+        }
     });
 });

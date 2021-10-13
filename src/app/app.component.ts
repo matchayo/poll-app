@@ -20,6 +20,7 @@ export class AppComponent {
   total: number = 0;
   value: number = 0;
   quantity: number = 0;
+  feedbackMessage: string = "Message";
 
   public pieChartOptions: ChartOptions = {
     responsive: true,
@@ -55,6 +56,9 @@ export class AppComponent {
       value: this.value,
       quantity: this.quantity
     });
+
+    // Extra task: Get feedback message after a purchase
+    this.onFeedbackMessage();
   }
 
   onChart() {
@@ -64,6 +68,14 @@ export class AppComponent {
     this.teamsObj.teams.forEach((team: any) => {
       this.pieChartLabels.push(team.text);
       this.pieChartData.push(team.count);
+    });
+  }
+
+  // Extra task
+  onFeedbackMessage() {
+    this.socket.on("feedbackMessage", (feedbackObj: any) => {
+      this.feedbackMessage = feedbackObj.message;
+      console.log(this.feedbackMessage);
     });
   }
 }
